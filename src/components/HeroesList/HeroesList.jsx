@@ -9,8 +9,10 @@ class HeroesList extends React.Component {
     collections: [],
   };
 
-  componentDidUpdate() {
-    this.getHeroes(this.props.query);
+  componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) {
+      this.getHeroes(this.props.query);
+    }
   }
 
   getHeroes = async query => {
