@@ -1,43 +1,48 @@
-import React from 'react';
+import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import dataJson from '../data.json';
 
-import SearchForm from 'components/Form/Form';
-import HeroesList from 'components/HeroesList/HeroesList';
-import { ModalItem } from './Modal/Modal';
+// const data = [
+//   { id: '1', title: 'Часы', descr: 'надеждные, как пружина от дивана' },
+//   { id: '2', title: 'Золотая цепь', descr: 'за которую не заплатили' },
+//   { id: '3', title: 'Роллс-Ройс', descr: 'полоченный ' },
 
-export class App extends React.Component {
-  state = {
-    query: '',
-    modalShow: false,
-    hero: {},
+// ];
+
+// const data = [{ id: '1' }, { id: '2' }, { id: '3' }];
+const App = () => {
+  const [currentItem, setCurrentItem] = useState('');
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setData(dataJson);
+  }, []);
+
+  const onClickItem = event => {
+    const { id } = event.currentTarget;
+    setCurrentItem(id);
   };
 
-  onSubmit = query => {
-    this.setState({ query });
-  };
+  return (
+    <>
+      <ul>
+        {data.map(el => (
+          <li
+            key={el.id}
+            onClick={onClickItem}
+            id={el.id}
+            style={{
+              backgroundColor: currentItem === el.id ? 'green' : 'teal',
+            }}
+          >
+            <h2>{el.title}</h2>
+            <p>{el.descr}</p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
-  setModalShow = hero => {
-    this.setState({ modalShow: true, hero });
-  };
-
-  render() {
-    return (
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: 20,
-          color: '#010101',
-        }}
-      >
-        <SearchForm onSubmit={this.onSubmit} />
-        <HeroesList query={this.state.query} onClick={this.setModalShow} />
-        <ModalItem
-          hero={this.state.hero}
-          show={this.state.modalShow}
-          onHide={() => this.setState({ modalShow: false })}
-        />
-      </div>
-    );
-  }
-}
+export default App;
